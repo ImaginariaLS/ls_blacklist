@@ -2,10 +2,10 @@
 /**
  * Blacklist - проверка E-Mail пользователей на наличие в базах спамеров.
  *
- * Версия:	1.1.0
- * Автор:	Александр Вереник
- * Профиль:	http://livestreet.ru/profile/Wasja/
- * GitHub:	https://github.com/wasja1982/livestreet_blacklist
+ * Версия:    1.1.0
+ * Автор:    Александр Вереник
+ * Профиль:    http://livestreet.ru/profile/Wasja/
+ * GitHub:    https://github.com/wasja1982/livestreet_blacklist
  *
  **/
 
@@ -16,7 +16,11 @@ if (!class_exists('Plugin')) {
     die('Hacking attemp!');
 }
 
-class PluginBlacklist extends Plugin {
+/**
+ * Class PluginBlacklist
+ */
+class PluginBlacklist extends Plugin
+{
 
     protected $aInherits = array(
         'entity' => array('ModuleUser_EntityUser'),
@@ -24,9 +28,20 @@ class PluginBlacklist extends Plugin {
     );
 
     /**
+     * @param $sMail
+     * @return mixed
+     */
+    static function blackMail($sMail)
+    {
+        $oEngine = Engine::getInstance();
+        return $oEngine->PluginBlacklist_ModuleBlacklist_blackMail($sMail);
+    }
+
+    /**
      * Активация плагина
      */
-    public function Activate() {
+    public function Activate()
+    {
         if (!$this->isTableExists('prefix_blacklist')) {
             $this->ExportSQL(dirname(__FILE__) . '/dump.sql');
         } elseif (!$this->isFieldExists('prefix_blacklist', 'service')) {
@@ -38,12 +53,7 @@ class PluginBlacklist extends Plugin {
     /**
      * Инициализация плагина
      */
-    public function Init() {
-    }
-
-    static function blackMail($sMail) {
-        $oEngine = Engine::getInstance ();
-        return $oEngine->PluginBlacklist_ModuleBlacklist_blackMail($sMail);
+    public function Init()
+    {
     }
 }
-?>
