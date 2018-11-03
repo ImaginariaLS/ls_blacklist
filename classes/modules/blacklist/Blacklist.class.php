@@ -70,20 +70,6 @@ class PluginBlacklist_ModuleBlacklist extends Module
         $bIp = false;
         $bResult = false;
 
-        /*
-        if (Config::Get('plugin.blacklist.use_stopforumspam_com')) {
-            $aResult = $this->check_stopforumspam_com($sMail, $sIp, $bCheckMail, $bCheckIp);
-            $bMail |= (is_array($aResult) && isset($aResult[self::TYPE_MAIL]) ? $aResult[self::TYPE_MAIL] : false);
-            $bIp |= (is_array($aResult) && isset($aResult[self::TYPE_IP]) ? $aResult[self::TYPE_IP] : false);
-            $bResult = $this->analyse_result($aResult, $bCheckMail, $bCheckIp, $bIpExact);
-            if ($bCheckMail) {
-                $this->AddMailResult($sMail, $bMail, self::SERVICE_STOPFORUMSPAM_COM);
-            }
-            if ($bCheckIp) {
-                $this->AddIpResult($sIp, $bIp, self::SERVICE_STOPFORUMSPAM_COM);
-            }
-        }
-        */
         if (!$bResult && Config::Get('plugin.blacklist.use_botscout_com')) {
             $aResult = $this->check_botscout_com($sMail, $sIp, $bCheckMail, $bCheckIp);
             $bMail |= (is_array($aResult) && isset($aResult[self::TYPE_MAIL]) ? $aResult[self::TYPE_MAIL] : false);
@@ -283,49 +269,7 @@ class PluginBlacklist_ModuleBlacklist extends Module
         }
     }
 
-    /*
-    public function check_stopforumspam_com($sMail, $sIp, $bCheckMail, $bCheckIp)
-    {
-        $aParams = array(
-            'f' => 'json',
-        );
-        if ($bCheckMail) {
-            $aParams['email'] = $sMail;
-        }
-        if ($bCheckIp) {
-            $aParams['ip'] = $sIp;
-        }
-        $sUrl = 'http://api.stopforumspam.org/api' . '?' . urldecode(http_build_query($aParams));
-        $sAnswer = @file_get_contents($sUrl);
 
-        if (DEBUG) {
-            error_log('stopforumspam.com');
-            error_log($sUrl);
-            error_log($sAnswer);
-        }
-
-        $aInfo = json_decode($sAnswer, true);
-        if (isset($aInfo['success']) && $aInfo['success']) {
-            $bMail = false;
-            $bIp = false;
-            if ($bCheckMail) {
-                if (isset($aInfo['email']) && isset($aInfo['email']['appears']) && isset($aInfo['email']['frequency'])) {
-                    $bMail = ($aInfo['email']['appears'] ? ($aInfo['email']['frequency'] >= Config::Get('plugin.blacklist.check_mail_limit')) : false);
-                }
-            }
-            if ($bCheckIp) {
-                if (isset($aInfo['ip']) && isset($aInfo['ip']['appears']) && isset($aInfo['ip']['frequency'])) {
-                    $bIp = ($aInfo['ip']['appears'] ? ($aInfo['ip']['frequency'] >= Config::Get('plugin.blacklist.check_ip_limit')) : false);
-                }
-            }
-            return array(
-                self::TYPE_MAIL => $bMail,
-                self::TYPE_IP => $bIp,
-            );
-        }
-        return false;
-    }
-    */
 
     /**
      * @param $sMail
