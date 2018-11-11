@@ -328,6 +328,7 @@ class PluginBlacklist_ModuleBlacklist extends Module
                 $bIp = false;
                 $iMailLimit = Config::Get('plugin.blacklist.check_mail_limit');
                 $iIpLimit = Config::Get('plugin.blacklist.check_ip_limit');
+
                 if ($bCheckMail && $bCheckIp && $aAnswer[1] === 'MULTI') {
                     for ($i = 2; $i < count($aAnswer); $i += 2) {
                         if (isset($aAnswer[$i]) && isset($aAnswer[$i + 1])) {
@@ -342,7 +343,7 @@ class PluginBlacklist_ModuleBlacklist extends Module
                     if ($bCheckMail && $aAnswer[1] === 'MAIL') {
                         $bMail = ($aAnswer[2] >= $iMailLimit);
                     } else if ($bCheckMail && $aAnswer[1] === 'IP') {
-                        $bIp = ($aAnswer[$i + 1] >= $iIpLimit);
+                        $bIp = ($aAnswer[4] >= $iIpLimit);
                     }
                 }
                 return array(
