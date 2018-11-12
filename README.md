@@ -1,15 +1,15 @@
 blacklist
 =========
 
-Плагин "Blacklist" (версия 1.2.0) для LiveStreet 1.0.4
+Плагин "Blacklist" (версия 1.3) для LiveStreet 1.0.4
 
-Проверка E-Mail и IP пользователей на наличие в базах спамеров.
+Проверка E-Mail и IP пользователей на наличие в черном и белом списках и, опционально, базах спамеров.
 
 Installation
 ============
 
 1. Скопировать плагин в каталог /plugins/
-2. Отредактировать, при необходимости, файлы `/config/blacklist.txt` и `/config/whitelist.txt`
+2. Отредактировать, при необходимости, файлы `/config/plugins.blacklist/blacklist.txt` и `/config/plugins.blacklist/whitelist.txt`
 3. Через панель управления плагинами (/admin/plugins/) запустить его активацию.
 
 
@@ -64,6 +64,11 @@ Configure
 
 Changelog
 =========
+
+1.3.0 (2018-11-13):
+
+Refactoring for PHP7.2 by Karel Wintersky
+Изменена логика правил валидации
 
 1.2.0 (2018-10-31):
 

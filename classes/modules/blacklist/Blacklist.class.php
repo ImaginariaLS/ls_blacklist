@@ -2,14 +2,10 @@
 /**
  * Blacklist - проверка E-Mail пользователей на наличие в базах спамеров.
  *
- * Версия:    1.1.0
- * Автор:    Александр Вереник
- * Профиль:    http://livestreet.ru/profile/Wasja/
- * GitHub:    https://github.com/wasja1982/livestreet_blacklist
+ * Версия:    1.2
+ * Автор:    Karel Wintersky
  *
  **/
-
-define('DEBUG', false);
 
 /**
  * Class PluginBlacklist_ModuleBlacklist
@@ -32,30 +28,48 @@ class PluginBlacklist_ModuleBlacklist extends Module
     }
 
     /**
+     * Главная функция. Возвращает TRUE если емейл не прошел одну из проверок на валидность
+     * (то есть его нет в white-list или он есть в blacklist)
+     *
      * @param $sMail
      * @param null $sName
      * @return bool|mixed
      */
-    public function blackMail($sMail, $sName = null)
+    public function checkCredentialsBlocked($sMail, $sName = null)
     {
         $sIp = func_getIp();
-        if ((!empty($sMail) && $this->check_whitelist_users_mail($sMail)) ||
-            (!empty($sName) && $this->check_whitelist_users_name($sName)) ||
-            (!empty($sIp) && $this->check_whitelist_users_ip($sIp)) ||
-            $this->check_whitelist_domains($sMail)) {
+
+        if (
+            ($this->check_whitelist_users_mail($sMail)) ||      // проверка по белому списку конкретных емейлов
+            ($this->check_whitelist_users_name($sName)) ||      // проверка по белому списку логинов
+            ($this->check_whitelist_users_ip($sIp)) ||          // проверка по белому списку IP
+             $this->check_whitelist_domains($sMail)             // проверка по белому списку доменов емейлов
+        ) {
+            // одно из правил вернуло TRUE, то есть email валиден и не заблокирован (то есть isBlocked === FALSE)
             return false;
         }
-        if ((!empty($sMail) && $this->check_blacklist_users_mail($sMail)) ||
-            (!empty($sName) && $this->check_blacklist_users_name($sName)) ||
-            (!empty($sIp) && $this->check_blacklist_users_ip($sIp)) ||
-            $this->check_blacklist_domains($sMail)) {
+
+        if (
+            ($this->check_blacklist_users_mail($sMail)) ||      // проверка по черному списку конкретных емейлов
+            ($this->check_blacklist_users_name($sName)) ||      // проверка по черному списку логинов
+            ($this->check_blacklist_users_ip($sIp)) ||          // проверка по черному списку IP
+            $this->check_blacklist_domains($sMail)              // проверка по черному списку доменов емейлов
+        ) {
+            // одно из правил вернуло TRUE, то есть email заблокирован (то есть isBlocked === TRUE)
             return true;
         }
+
+        // емейл не найден ни в белых списках, ни в чёрных
+        // обрабатываем
+
+        dd('Continue checking ');
+
         $bCheckMail = (Config::Get('plugin.blacklist.check_mail') && $sMail);
         $bCheckIp = (Config::Get('plugin.blacklist.check_ip') && $sIp && $sIp !== '127.0.0.1');
         if (!$bCheckMail && !$bCheckIp) {
             return false;
         }
+
         $bIpExact = Config::Get('plugin.blacklist.check_ip_exact');
         $aResult = $this->check_local_base($sMail, $sIp, $bCheckMail, $bCheckIp);
         if (is_array($aResult)) {
@@ -98,45 +112,72 @@ class PluginBlacklist_ModuleBlacklist extends Module
     }
 
     /**
+     * Проверка емейла по белому списку ЕМЕЙЛОВ
+     *
      * @param $sMail
      * @return bool
      */
     public function check_whitelist_users_mail($sMail)
     {
-        return in_array(mb_strtolower($sMail), Config::Get('plugin.blacklist.whitelist_users_mail'));
+        if (empty($sMail)) {
+            return false;
+        }
+
+        $whitelist_users_mail = Config::Get('plugin.blacklist.whitelist_users_mail');
+
+        return in_array(mb_strtolower($sMail), $whitelist_users_mail);
     }
 
     /**
+     * Проверка по белому списку юзернеймов
+     *
      * @param $sName
      * @return bool
      */
     public function check_whitelist_users_name($sName)
     {
-        return in_array(mb_strtolower($sName), Config::Get('plugin.blacklist.whitelist_users_name'));
+        if (empty($sName)) {
+            return false;
+        }
+
+        $whitelist_users_name = Config::Get('plugin.blacklist.whitelist_users_name');
+
+        return in_array(mb_strtolower($sName), $whitelist_users_name);
     }
 
     /**
+     * Проверка по белому списку IP
+     *
      * @param $sIp
      * @return bool
      */
     public function check_whitelist_users_ip($sIp)
     {
-        return in_array(mb_strtolower($sIp), Config::Get('plugin.blacklist.whitelist_users_ip'));
+        $whitelist_users_ip = Config::Get('plugin.blacklist.whitelist_users_ip');
+
+        return in_array(mb_strtolower($sIp), $whitelist_users_ip);
     }
 
     /**
+     * Проверяет ДОМЕНЫ
+     *
      * @param $sMail
      * @return bool
      */
     public function check_whitelist_domains($sMail)
     {
+        $whitelist_zones = Config::Get('plugin.blacklist.whitelist_zones');
+
         $aMail = explode("@", $sMail);
         $sDomain = (count($aMail) > 1 ? $aMail[1] : '');
         $aDomain = explode('.', $sDomain);
         $sBaseDomain = count($aDomain) > 2 ? $aDomain[count($aDomain) - 2] . '.' . $aDomain[count($aDomain) - 1] : $sDomain;
         $sZone = count($aDomain) > 1 ? $aDomain[count($aDomain) - 1] : $sDomain;
         $aDomains = Config::Get('plugin.blacklist.whitelist_domains');
-        return in_array(mb_strtolower($sDomain), $aDomains) || in_array(mb_strtolower($sBaseDomain), $aDomains) || in_array(mb_strtolower($sZone), Config::Get('plugin.blacklist.whitelist_zones'));
+
+        return in_array(mb_strtolower($sDomain), $aDomains)
+            || in_array(mb_strtolower($sBaseDomain), $aDomains)
+            || in_array(mb_strtolower($sZone), $whitelist_zones);
     }
 
     /**
@@ -145,6 +186,10 @@ class PluginBlacklist_ModuleBlacklist extends Module
      */
     public function check_blacklist_users_mail($sMail)
     {
+        if (empty($sMail)) {
+            return false;
+        }
+
         return in_array(mb_strtolower($sMail), Config::Get('plugin.blacklist.blacklist_users_mail'));
     }
 
@@ -154,6 +199,10 @@ class PluginBlacklist_ModuleBlacklist extends Module
      */
     public function check_blacklist_users_name($sName)
     {
+        if (empty($sName)) {
+            return false;
+        }
+
         return in_array(mb_strtolower($sName), Config::Get('plugin.blacklist.blacklist_users_name'));
     }
 
@@ -225,15 +274,6 @@ class PluginBlacklist_ModuleBlacklist extends Module
                 }
             }
 
-            // TODO: Проверка каждого из сервисов по отдельности
-            /*
-                        $aCache = array();
-                        foreach ($aInfo as $aItem) {
-                            if (isset($aItem['type']) && isset($aItem['service'])) {
-                                $aCache[$aItem['service']][$aItem['type']] = ((isset($aItem['result']) && $aItem['result']) ? true : false);
-                            }
-                        }
-             */
             $bResult = array();
             if ($bMailExist) {
                 $bResult[self::TYPE_MAIL] = $bMail;
@@ -314,12 +354,6 @@ class PluginBlacklist_ModuleBlacklist extends Module
         }
         $sUrl = 'http://botscout.com/test/' . '?' . urldecode(http_build_query($aParams));
         $sAnswer = @file_get_contents($sUrl);
-
-        if (DEBUG) {
-            error_log('botscout.com');
-            error_log($sUrl);
-            error_log($sAnswer);
-        }
 
         if ($sAnswer) {
             $aAnswer = explode('|', $sAnswer);

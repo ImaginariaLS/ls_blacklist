@@ -2,10 +2,7 @@
 /**
  * Blacklist - проверка E-Mail пользователей на наличие в базах спамеров.
  *
- * Версия:    1.1.0
- * Автор:    Александр Вереник
- * Профиль:    http://livestreet.ru/profile/Wasja/
- * GitHub:    https://github.com/wasja1982/livestreet_blacklist
+ * Версия:    1.2
  *
  **/
 
@@ -29,13 +26,13 @@ $config = [
     'use_botscout_com'  =>  false,
 
     // Ключ для сайта botscout.com - http://botscout.com/getkey.htm
-    'key_botscout_com'  =>  'xxxxxxxxxxxxxxx',
+    'key_botscout_com'  =>  '',
 
     // Использовать базу сайта fspamlist.com
     'use_fspamlist_com' =>  false,
 
     // Ключ для сайта fspamlist.com - http://fspamlist.com/index.php?c=register
-    'key_fspamlist_com' =>  'xxxxxxxxxxxxxxx',
+    'key_fspamlist_com' =>  '',
 
     // Проверять e-mail и IP при авторизации
     'check_authorization'   => true,
@@ -71,12 +68,12 @@ $config = [
 /* === Черный и белый списки доменов - это текстовые файлы в /config/ === */
 
 // Белый список доменов
-$config['whitelist_filename'] = Config::Get('path.root.server') . '/config/whitelist.txt';
+$config['whitelist_filename'] = Config::Get('path.root.server') . '/config/plugin.blacklist/whitelist.txt';
 
 $config['whitelist_domains'] = is_readable($config['whitelist_filename']) ? file( $config['whitelist_filename'], FILE_IGNORE_NEW_LINES ) : [];
 
 // Черный список доменов
-$config['blacklist_filename'] = Config::Get('path.root.server') . '/config/blacklist.txt';
+$config['blacklist_filename'] = Config::Get('path.root.server') . '/config/plugin.blacklist/blacklist.txt';
 
 $config['blacklist_domains'] = is_readable($config['blacklist_filename']) ? file( $config['blacklist_filename'], FILE_IGNORE_NEW_LINES ) : [];
 
