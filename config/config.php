@@ -38,7 +38,7 @@ $config = [
     'key_fspamlist_com' =>  'xxxxxxxxxxxxxxx',
 
     // Проверять e-mail и IP при авторизации
-    'check_authorization'   =>true,
+    'check_authorization'   => true,
 
     // Белый список доменных зон (без точек)
     'whitelist_zones'       =>  [],
@@ -73,12 +73,12 @@ $config = [
 // Белый список доменов
 $config['whitelist_filename'] = Config::Get('path.root.server') . '/config/whitelist.txt';
 
-$config['whitelist_domains'] = is_readable($config['whitelist_filename']) ? file( $config['whitelist_filename'] ) : [];
+$config['whitelist_domains'] = is_readable($config['whitelist_filename']) ? file( $config['whitelist_filename'], FILE_IGNORE_NEW_LINES ) : [];
 
 // Черный список доменов
 $config['blacklist_filename'] = Config::Get('path.root.server') . '/config/blacklist.txt';
 
-$config['blacklist_domains'] = is_readable($config['blacklist_filename']) ? file( $config['blacklist_filename'] ) : [];
+$config['blacklist_domains'] = is_readable($config['blacklist_filename']) ? file( $config['blacklist_filename'], FILE_IGNORE_NEW_LINES ) : [];
 
 Config::Set('db.table.blacklist', '___db.table.prefix___blacklist');
 
