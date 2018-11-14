@@ -68,14 +68,20 @@ $config = [
 /* === Черный и белый списки доменов - это текстовые файлы в /config/ === */
 
 // Белый список доменов
-$config['whitelist_filename'] = Config::Get('path.root.server') . '/config/plugin.blacklist/whitelist.txt';
+$config['whitelist_filename'] = Config::Get('path.root.server') . '/config/plugins/blacklist/whitelist.txt';
 
-$config['whitelist_domains'] = is_readable($config['whitelist_filename']) ? file( $config['whitelist_filename'], FILE_IGNORE_NEW_LINES ) : [];
+$config['whitelist_domains'] =
+    is_readable($config['whitelist_filename'])
+    ? file( $config['whitelist_filename'], FILE_IGNORE_NEW_LINES )
+    : [];
 
 // Черный список доменов
-$config['blacklist_filename'] = Config::Get('path.root.server') . '/config/plugin.blacklist/blacklist.txt';
+$config['blacklist_filename'] = Config::Get('path.root.server') . '/config/plugins/blacklist/blacklist.txt';
 
-$config['blacklist_domains'] = is_readable($config['blacklist_filename']) ? file( $config['blacklist_filename'], FILE_IGNORE_NEW_LINES ) : [];
+$config['blacklist_domains'] =
+    is_readable($config['blacklist_filename'])
+    ? file( $config['blacklist_filename'], FILE_IGNORE_NEW_LINES )
+    : [];
 
 Config::Set('db.table.blacklist', '___db.table.prefix___blacklist');
 
