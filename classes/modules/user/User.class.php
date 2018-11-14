@@ -22,7 +22,7 @@ class PluginBlacklist_ModuleUser extends PluginBlacklist_Inherit_ModuleUser
         if (
             !Config::Get('plugin.blacklist.check_authorization') ||
             ($oUser && $oUser->isAdministrator()) ||
-            ($oUser && !$this->PluginBlacklist_ModuleBlacklist_blackMail($oUser->getMail(), $oUser->getLogin()))
+            ($oUser && !$this->PluginBlacklist_ModuleBlacklist_checkCredentialsBlocked($oUser->getMail(), $oUser->getLogin()))
         ) {
             return parent::Authorization($oUser, $bRemember, $sKey);
         }
