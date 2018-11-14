@@ -31,7 +31,7 @@ class PluginBlacklist extends Plugin
     static function blackMail($sMail)
     {
         $oEngine = Engine::getInstance();
-        return $oEngine->PluginBlacklist_ModuleBlacklist_blackMail($sMail);
+        return $oEngine->PluginBlacklist_ModuleBlacklist_checkCredentialsBlocked($sMail);
     }
 
     /**
