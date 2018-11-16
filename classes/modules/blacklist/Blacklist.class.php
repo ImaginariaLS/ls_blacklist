@@ -62,8 +62,6 @@ class PluginBlacklist_ModuleBlacklist extends Module
         // емейл не найден ни в белых списках, ни в чёрных
         // обрабатываем
 
-        dd('Continue checking ');
-
         $bCheckMail = (Config::Get('plugin.blacklist.check_mail') && $sMail);
         $bCheckIp = (Config::Get('plugin.blacklist.check_ip') && $sIp && $sIp !== '127.0.0.1');
         if (!$bCheckMail && !$bCheckIp) {
