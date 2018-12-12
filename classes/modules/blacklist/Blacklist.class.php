@@ -17,6 +17,7 @@ class PluginBlacklist_ModuleBlacklist extends Module
     const SERVICE_FSPAMLIST_COM = 3;
     const TYPE_MAIL = 'mail';
     const TYPE_IP = 'ip';
+    const DEBUG = false;
     protected $oMapper;
 
     /**
@@ -249,7 +250,7 @@ class PluginBlacklist_ModuleBlacklist extends Module
         }
         $aInfo = $this->oMapper->Check($aWhere);
 
-        if (DEBUG) {
+        if (self::DEBUG) {
             error_log('Local Base');
             error_log(serialize($aWhere));
             error_log(serialize($aInfo));
@@ -415,7 +416,7 @@ class PluginBlacklist_ModuleBlacklist extends Module
         $sUrl = 'http://www.fspamlist.com/api.php' . '?' . urldecode(http_build_query($aParams));
         $sAnswer = @file_get_contents($sUrl);
 
-        if (DEBUG) {
+        if (self::DEBUG) {
             error_log('fspamlist.com');
             error_log($sUrl);
             error_log($sAnswer);
