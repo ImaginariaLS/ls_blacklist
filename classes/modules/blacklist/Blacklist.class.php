@@ -45,7 +45,7 @@ class PluginBlacklist_ModuleBlacklist extends Module
             die('Your email not allowed');
         }
         
-        return true;
+        return false;
     }
     
     /* ==================================== МЫЛО =============================== */ 
