@@ -9,7 +9,7 @@
         <lang name="russian">Karel Wintersky</lang>
     </author>
     <homepage>https://github.com/ImaginariaLS/ls_blacklist</homepage>
-    <version>1.3</version>
+    <version>1.4</version>
     <requires>
         <livestreet>1.0.4</livestreet>
         <plugins>

@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS `prefix_blacklist` (
   `result`  tinyint(1)       NOT NULL DEFAULT '0',
   PRIMARY KEY (`content`, `type`, `service`)
 )
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+ENGINE = InnoDB
+DEFAULT CHARSET = utf8;
