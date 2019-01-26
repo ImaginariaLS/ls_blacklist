@@ -42,6 +42,8 @@ class PluginBlacklist_ModuleBlacklist extends Module
         
         if (!$this->check_Whitelist_Domain($sMail)) {
             \header("HTTP/500", true, 500);
+            return true;
+            
             die('Your email not allowed');
         }
         
